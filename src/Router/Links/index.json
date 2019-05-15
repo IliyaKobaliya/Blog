@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Все сообщения",
+    "path": "/LatestPosts",
+    "key": 1,
+    "id": "LatestPosts"
+  },
+  {
+    "title": "Просмотр сообщения",
+    "path": "/ViewPost",
+    "key": 2,
+    "id": "ViewPost"
+  }
+]

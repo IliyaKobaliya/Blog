@@ -1,0 +1,1 @@
+export const API_HOST = "https://simple-blog-api.crew.red";
