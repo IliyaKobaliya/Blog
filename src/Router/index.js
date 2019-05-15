@@ -27,7 +27,6 @@ class RouterApp extends Component {
                     <TopMenu/>
                     <Route exact path="/" render={() => (<Redirect to="/LatestPosts"/>)}/>
                     {this.routes}
-                    {/*<Route path="/ViewPost" component={ViewPost}/>*/}
                     <Route path="/ViewPost/posts/:id" component={ViewPost}/>
                 </Grid>
             </Grid>

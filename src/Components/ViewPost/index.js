@@ -12,6 +12,8 @@ import {API_HOST} from "../../Config";
 import {getComments} from "../../Redux/Actions/GetComments";
 import AddNewComment from './AddComment'
 import {withStyles} from "@material-ui/core/styles/index";
+import {getLatestPosts} from "../../Redux/Actions/GetLatestPosts";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 ///////////////////////////////////
 
@@ -21,12 +23,21 @@ const styles = {
     },
     DF: {
         display: `flex`, flexDirection: `row`, justifyContent: `space-between`
+    },
+    progress: {
+        display: `flex`, alignItems: `center`, justifyContent: `center`
     }
 };
+
 class ViewPost extends Component {
 
     componentDidMount() {
-        this.props.getComments(`${API_HOST}/posts/${this.props.post.id}?_embed=comments`);
+        console.log(this.props.post === undefined);
+        if (this.props.post === undefined) {
+            const URL = `${API_HOST}/posts`;
+            this.props.loadPosts(URL);
+        }
+        this.props.getComments(`${API_HOST}/posts/${this.props.ownProps.match.params.id}?_embed=comments`);
     }
 
     state = {
@@ -51,6 +62,15 @@ class ViewPost extends Component {
     render() {
         const {classes} = this.props;
         let post = this.props.post;
+
+
+        if (this.props.isLoadComments) {
+            console.log(this.props.isLoadComments);
+            return <CircularProgress className={classes.progress} color="secondary"/>
+        }
+        if (this.props.post === undefined) {
+            return <CircularProgress className={classes.progress} color="secondary"/>
+        }
         return (
             <Grid container direction="row"
                   justify="center"
@@ -76,8 +96,8 @@ class ViewPost extends Component {
                                 Comments
                             </Typography>
                             <div className={classes.comments}>
-                                {this.props.comments.map(comment => <Grid item xs={12} key={comment.id}>{comment.body}
-                                    <Divider/></Grid>)}
+                                {this.props.comments.map(comment => <Grid item xs={12}
+                                                                          key={comment.id}>{comment.body}<Divider/></Grid>)}
                             </div>
                         </CardContent>
                         <Divider/>
@@ -92,13 +112,17 @@ class ViewPost extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+    console.log(Number(ownProps.match.params.id));
     return {
+        ownProps,
         post: state.LatestPosts.find(post => post.id === Number(ownProps.match.params.id)),
-        comments: state.getCommentsSuccess
+        comments: state.getCommentsSuccess,
+        isLoadComments: state.getCommentsLoading
     }
 };
 const mapDispatchToProps = (dispatch) => {
     return {
+        loadPosts: (url) => dispatch(getLatestPosts(url)),
         addComment: (url, comments) => dispatch(AddComment(url, comments)),
         getComments: (url) => dispatch(getComments(url))
     };
